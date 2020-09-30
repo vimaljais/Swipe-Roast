@@ -1,17 +1,26 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import Header from "./Header";
 import FoodCards from "./FoodCards";
-import SwipeButtons from "./SwipeButtons";
+import Categories from "./Categories";
 
-function App() {
+const App = () => {
+  const [choice, setChoice] = useState("dessert");
+
+  useEffect(() => {
+    console.log(choice);
+  }, [choice]);
+
+  const catfield = (selected) => {
+    setChoice(selected);
+  };
   return (
     <div>
       <Header />
-      <FoodCards />
-      <SwipeButtons />
+      <Categories catfield={catfield} />
+      <FoodCards category={choice} />
     </div>
   );
-}
+};
 
 export default App;

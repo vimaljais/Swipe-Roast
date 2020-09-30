@@ -1,19 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./FoodCards.scss";
 import TinderCard from "react-tinder-card";
 
-function FoodCards() {
+const FoodCards = ({ category }) => {
   const [dishes, setDishes] = useState([
     {
-      name: "Bakewell tart",
-      url: "https://www.themealdb.com/images/media/meals/wyrqqq1468233628.jpg",
+      strMeal: "Bakewell tart",
+      strMealThumb:
+        "https://www.themealdb.com/images/media/meals/wyrqqq1468233628.jpg",
     },
     {
-      name: "Bread and Butter Pudding",
-      url: "https://www.themealdb.com/images/media/meals/xqwwpy1483908697.jpg",
+      strMeal: "Bread and Butter Pudding",
+      strMealThumb:
+        "https://www.themealdb.com/images/media/meals/xqwwpy1483908697.jpg",
     },
   ]);
 
+  useEffect(() => {
+    fetch(`http://localhost:3001/bycategory?q=${category}`)
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(response.meals);
+        if (response.meals !== null) {
+          setDishes(response.meals);
+        }
+      });
+    console.log("card wala " + category);
+  }, [category]);
   const swiped = (direction, nameToDelete) => {
     console.log("removing: " + nameToDelete);
   };
@@ -26,22 +39,22 @@ function FoodCards() {
         {dishes.map((dishes) => (
           <TinderCard
             className="swipe"
-            key={dishes.name}
+            key={dishes.strMeal}
             preventSwipe={["up", "down"]}
-            onSwipe={(dir) => swiped(dir, dishes.name)}
-            onCardLeftScreen={() => outOfFrame(dishes.name)}
+            onSwipe={(dir) => swiped(dir, dishes.strMeal)}
+            onCardLeftScreen={() => outOfFrame(dishes.strMeal)}
           >
             <div
-              style={{ backgroundImage: `url(${dishes.url})` }}
+              style={{ backgroundImage: `url(${dishes.strMealThumb})` }}
               className="card"
             >
-              <h3 style={{ textShadow: "2px 2px grey" }}>{dishes.name}</h3>
+              <h3 style={{ textShadow: "2px 2px grey" }}>{dishes.strMeal}</h3>
             </div>
           </TinderCard>
         ))}
       </div>
     </div>
   );
-}
+};
 
 export default FoodCards;
